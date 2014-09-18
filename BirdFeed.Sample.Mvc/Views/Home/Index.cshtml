@@ -1,0 +1,14 @@
+﻿@using BirdFeed.Core;
+
+@model IEnumerable<Tweet>
+
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<ul>
+@foreach(Tweet tweet in Model)
+{
+  <li>@tweet.Text</li>
+}
+</ul>
