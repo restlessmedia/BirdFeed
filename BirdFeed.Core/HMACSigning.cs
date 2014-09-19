@@ -4,7 +4,7 @@ using System.Text;
 
 namespace BirdFeed.Core
 {
-  public class HMACSigning : IOAuthSigning
+    internal class HMACSigning : IOAuthSigning
   {
     public string Sign(string key, string value)
     {

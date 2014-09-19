@@ -9,7 +9,7 @@ using System.Net.Http;
 
 namespace BirdFeed.Core
 {
-  public class Twitter : ITwitter
+  internal class Twitter : ITwitter
   {
     public Twitter(ITwitterHttpClient client)
     {

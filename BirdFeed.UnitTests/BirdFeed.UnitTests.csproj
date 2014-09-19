@@ -63,6 +63,8 @@
     <Compile Include="OAuthTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="HttpClientTests.cs" />
+    <Compile Include="Request\Options\UpdateStatusOptionsTests.cs" />
+    <Compile Include="Request\Options\UserTimelineOptionsTests.cs" />
     <Compile Include="TwitterHttpClientTests.cs" />
     <Compile Include="TwitterTests.cs" />
   </ItemGroup>

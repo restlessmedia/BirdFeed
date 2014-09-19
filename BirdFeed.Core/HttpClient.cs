@@ -9,7 +9,7 @@ using System.Text;
 
 namespace BirdFeed.Core
 {
-  public class HttpClient : IHttpClient
+    internal class HttpClient : IHttpClient
   {
     public HttpClient(bool deCompress = true)
     {
@@ -31,9 +31,9 @@ namespace BirdFeed.Core
         {
           result = client.DownloadString(uri);
         }
-        catch (Exception e)
+        catch
         {
-          throw new TwitterHttpException(ExceptionCode.BadGetRequest, e);
+          throw;
         }
 
         return JsonConvert.DeserializeObject<T>(result);
@@ -60,7 +60,7 @@ namespace BirdFeed.Core
       return Upload<T>(uri, HttpMethod.Put, data);
     }
 
-    public event HttpClientEventHandler OnPreResponse;
+    public event HttpClientEventHandler PreResponse;
 
     public bool DeCompress { get; set; }
 
@@ -68,8 +68,8 @@ namespace BirdFeed.Core
     {
       Client client = new Client();
 
-      if (OnPreResponse != null)
-        OnPreResponse(uri, method, client.Headers, data);
+      if (PreResponse != null)
+        PreResponse(uri, method, client.Headers, data);
 
       return client;
     }
@@ -98,9 +98,9 @@ namespace BirdFeed.Core
         {
           response = client.UploadValues(uri, method.ToString(), data.ToNameValueCollection());
         }
-        catch (Exception e)
+        catch
         {
-          throw new TwitterHttpException(ExceptionCode.BadUploadRequest, e);
+          throw;
         }
 
         string json = Encoding.UTF8.GetString(response);

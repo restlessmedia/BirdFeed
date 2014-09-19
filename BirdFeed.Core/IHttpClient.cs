@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace BirdFeed.Core
 {
-  public interface IHttpClient
+  internal interface IHttpClient
   {
     T Get<T>(Uri uri, IDictionary<string, string> data = null);
 
@@ -17,6 +17,6 @@ namespace BirdFeed.Core
 
     bool DeCompress { get; set; }
 
-    event HttpClientEventHandler OnPreResponse;
+    event HttpClientEventHandler PreResponse;
   }
 }

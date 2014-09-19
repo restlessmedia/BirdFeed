@@ -2,7 +2,7 @@
 
 namespace BirdFeed.Core.Extensions
 {
-    public static class ModelExtensions
+    internal static class ModelExtensions
     {
         public static Tweet ToTweet(this UserTimelineResponse response)
         {

@@ -1,49 +1,60 @@
-﻿using BirdFeed.Core.Attributes;
+﻿using BirdFeed.Core.Extensions;
 using System;
-using System.ComponentModel;
+using System.Collections.Generic;
 
 namespace BirdFeed.Core.Request.Options
 {
-  public class UserTimelineOptions : ApiOptions
-  {
-    public UserTimelineOptions(int userId)
+    public class UserTimelineOptions : IApiOptions
     {
-      UserId = userId;
+        public UserTimelineOptions(int userId, int count)
+        {
+            if (count == 0)
+                throw new ArgumentException("count", string.Format("Invalid value {0} for count", count));
+
+            UserId = userId;
+            Count = count;
+        }
+
+        public UserTimelineOptions(string username, int count)
+        {
+            if (string.IsNullOrEmpty(username))
+                throw new ArgumentNullException("username");
+
+            if (count == 0)
+                throw new ArgumentException("count", string.Format("Invalid value {0} for count", count));
+
+            Username = username;
+            Count = count;
+        }
+
+        public UserTimelineOptions(int userId)
+            : this(userId, 10) { }
+
+        public UserTimelineOptions(string username)
+            : this(username, 10) { }
+
+        public int? UserId { get; private set; }
+
+        public string Username { get; private set; }
+
+        public int Count { get; private set; }
+
+        public bool TrimUser { get; set; }
+
+        public bool ExcludeReplies { get; set; }
+
+        public IDictionary<string, string> Parameters
+        {
+            get
+            {
+                return new Dictionary<string, string>
+                {
+                    {UserId.HasValue ? "user_id" : "screen_name" , UserId.HasValue ? UserId.ToString() : Username},
+                    {"count", Count.ToString()},
+                    {"trim_user", TrimUser.ToApiString()},
+                    {"exclude_replies", ExcludeReplies.ToApiString()}
+                };
+            }
+        }
     }
-
-    public UserTimelineOptions(string username)
-    {
-      if (string.IsNullOrEmpty(username))
-        throw new ArgumentNullException("name");
-
-      Username = username;
-    }
-
-    public UserTimelineOptions(int userId, int count)
-      : this(userId)
-    {
-      Count = count;
-    }
-
-    public UserTimelineOptions(string username, int count)
-      : this(username)
-    {
-      Count = count;
-    }
-
-    [Option("user_id")]
-    public int? UserId { get; set; }
-
-    [Option("screen_name")]
-    public string Username { get; set; }
-
-    [Option("count", "10")]
-    public int Count { get; set; }
-
-    [Option("trim_user", "1")]
-    public bool TrimUser { get; set; }
-
-    [Option("exclude_replies", "1")]
-    public bool ExcludeReplies { get; set; }
-  }
 }

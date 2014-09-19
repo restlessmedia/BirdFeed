@@ -9,7 +9,7 @@ using BirdFeed.Core.Extensions;
 
 namespace BirdFeed.Core
 {
-  public class OAuth
+  internal class OAuth
   {
     public OAuth(IOAuthSigning signing, IAuthCredentials auth, HttpMethod method, string baseUri, IDictionary<string, string> requestParameters, string nonce, string timestamp)
     {

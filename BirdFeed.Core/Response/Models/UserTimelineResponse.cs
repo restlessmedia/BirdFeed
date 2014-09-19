@@ -1,6 +1,6 @@
 ﻿namespace BirdFeed.Core.Response.Models
 {
-  public class UserTimelineResponse
+    internal class UserTimelineResponse
   {
     public string text { get; set; }
   }
