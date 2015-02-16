@@ -67,6 +67,9 @@ namespace BirdFeed.Core
     private Client CreateClient(Uri uri, HttpMethod method, IDictionary<string, string> data = null)
     {
       Client client = new Client();
+      
+      // use ssl - expose as constructor arg?
+      ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3;
 
       if (PreResponse != null)
         PreResponse(uri, method, client.Headers, data);
