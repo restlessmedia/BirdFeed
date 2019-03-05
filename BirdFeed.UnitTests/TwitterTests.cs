@@ -1,8 +1,11 @@
 ﻿using BirdFeed.Core;
+using BirdFeed.Core.Request;
 using BirdFeed.Core.Request.Options;
-using BirdFeed.Core.Response.Models;
+using BirdFeed.Core.Response;
 using FakeItEasy;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.Linq;
 using System.Net.Http;
 
 namespace BirdFeed.UnitTests
@@ -13,17 +16,51 @@ namespace BirdFeed.UnitTests
     public TwitterTests()
     {
       _client = A.Fake<ITwitterHttpClient>();
-      _twitter = new Twitter(_client);
+      _twitter = new Twitter(A.Fake<IConfiguration>(), _client);
     }
 
     [TestMethod]
-    public void Tweets_calls_client()
+    public void Tweets_calls_client_with_name()
     {
       const string name = "screen_name";
+      const int count = 10;
+      const string uri = "https://api.twitter.com/1.1/statuses/user_timeline.json";
 
-      _twitter.Tweets(name, 10);
+      A.CallTo(() => _client.Query<UserTimelineResponse>(A<string>.Ignored, A<UserTimelineOptions>.Ignored, HttpMethod.Get)).Returns(Enumerable.Empty<UserTimelineResponse>());
 
-      A.CallTo(() => _client.Query<UserTimelineOptions, UserTimelineResponse>(A<string>.Ignored, A<UserTimelineOptions>.Ignored, HttpMethod.Get)).MustHaveHappened();
+      _twitter.Tweets(name, count);
+
+      AssertQuery<UserTimelineOptions, UserTimelineResponse>(uri, x => x.Parameters["screen_name"].Equals(name) && x.Parameters["count"].Equals(count.ToString()), HttpMethod.Get);
+    }
+
+    [TestMethod]
+    public void Tweets_calls_client_with_id()
+    {
+      const int id = 999;
+      const int count = 10;
+      const string uri = "https://api.twitter.com/1.1/statuses/user_timeline.json";
+
+      A.CallTo(() => _client.Query<UserTimelineResponse>(A<string>.Ignored, A<UserTimelineOptions>.Ignored, HttpMethod.Get)).Returns(Enumerable.Empty<UserTimelineResponse>());
+
+      _twitter.Tweets(id, count);
+
+      AssertQuery<UserTimelineOptions, UserTimelineResponse>(uri, x => x.Parameters["user_id"].Equals(id.ToString()) && x.Parameters["count"].Equals(count.ToString()), HttpMethod.Get);
+    }
+
+    [TestMethod]
+    public void Tweet_calls_client()
+    {
+      const string status = "something, something, darkside";
+
+      A.CallTo(() => _client.Query<UserTimelineResponse>(A<string>.Ignored, A<UserTimelineOptions>.Ignored, HttpMethod.Get)).Returns(Enumerable.Empty<UserTimelineResponse>());
+
+      _twitter.Tweet(status);
+    }
+
+    private void AssertQuery<TOptions, TResult>(string uri, Func<TOptions, bool> optionValidate, HttpMethod method)
+      where TOptions : IApiOptions
+    {
+      A.CallTo(() => _client.Query<TResult>(A<string>.Ignored, A<TOptions>.Ignored, A<HttpMethod>.Ignored)).WhenArgumentsMatch(args => args.Get<string>(0).Equals(uri) && optionValidate(args.Get<TOptions>(1)) && args.Get<HttpMethod>(2).Equals(method)).MustHaveHappened();
     }
 
     private readonly ITwitterHttpClient _client;

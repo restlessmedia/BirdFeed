@@ -1,7 +1,9 @@
-﻿namespace BirdFeed.Core
+﻿using BirdFeed.Core.Configuration;
+
+namespace BirdFeed.Core
 {
   public interface IConfiguration
   {
-      IAuthCredentials Auth { get; }
+    IAuthProvider Provider { get; }
   }
 }

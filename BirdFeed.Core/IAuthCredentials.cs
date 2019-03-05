@@ -1,13 +1,6 @@
 ﻿namespace BirdFeed.Core
 {
-  public interface IAuthCredentials
+  public interface IAuthCredentials : IConsumer, IAccessToken
   {
-    string ConsumerKey { get; }
-
-    string ConsumerSecret { get; }
-
-    string AccessToken { get; }
-
-    string AccessTokenSecret { get; }
   }
 }

@@ -7,22 +7,16 @@ namespace BirdFeed.Core
 {
   public interface ITwitterHttpClient
   {
-    TResult Get<TOptions, TResult>(string uri, TOptions options)
-      where TOptions : IApiOptions;
+    TResult Get<TResult>(string uri, IApiOptions options);
 
-    TResult Get<TOptions, TResult>(Uri uri, TOptions options)
-      where TOptions : IApiOptions;
+    TResult Get<TResult>(string uri, IApiOptions options, Func<string, TResult> serializer);
 
-    TResult Post<TOptions, TResult>(string uri, TOptions options)
-      where TOptions : IApiOptions;
+    TResult Post<TResult>(string uri, IApiOptions options);
 
-    TResult Post<TOptions, TResult>(Uri uri, TOptions options)
-      where TOptions : IApiOptions;
+    TResult Post<TResult>(string uri, IApiOptions options, Func<string, TResult> serializer);
 
-    IEnumerable<TResult> Query<TOptions, TResult>(string uri, TOptions options, HttpMethod method)
-      where TOptions : IApiOptions;
+    IEnumerable<TResult> Query<TResult>(string uri, IApiOptions options, HttpMethod method);
 
-    IEnumerable<TResult> Query<TOptions, TResult>(Uri uri, TOptions options, HttpMethod method)
-      where TOptions : IApiOptions;
+    IEnumerable<TResult> Query<TResult>(string uri, IApiOptions options, HttpMethod method, Func<string, IEnumerable<TResult>> serializer);
   }
 }

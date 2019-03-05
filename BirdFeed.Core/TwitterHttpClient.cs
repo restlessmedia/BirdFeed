@@ -5,7 +5,7 @@ using System.Net.Http;
 
 namespace BirdFeed.Core
 {
-    internal class TwitterHttpClient : ITwitterHttpClient
+  internal class TwitterHttpClient : ITwitterHttpClient
   {
     public TwitterHttpClient(IHttpClient httpClient, IAuthCredentials auth)
     {
@@ -14,32 +14,47 @@ namespace BirdFeed.Core
       httpClient.PreResponse += (uri, method, responseHeaders, data) => OAuth.SetAuthorisationHeader(_auth, uri, method, responseHeaders, data);
     }
 
-    public TResult Get<TOptions, TResult>(string uri, TOptions options)
-      where TOptions : IApiOptions
+    public TResult Get<TResult>(string uri, IApiOptions options)
     {
-      Uri parsedUri;
-
-      if (!Uri.TryCreate(uri, UriKind.Absolute, out parsedUri))
-      {
-        throw new InvalidCastException("Unable to cast uri");
-      }
-
-      return Get<TOptions, TResult>(parsedUri, options);
+      return _httpClient.Get<TResult>(ParseAssertUri(uri), options.Parameters);
     }
 
-    public TResult Get<TOptions, TResult>(Uri uri, TOptions options)
-      where TOptions : IApiOptions
+    public TResult Get<TResult>(string uri, IApiOptions options, Func<string, TResult> serializer)
     {
-        if (uri == null)
-      {
-        throw new ArgumentNullException("uri");
-      }
-
-      return _httpClient.Get<TResult>(uri, options.Parameters);
+      return _httpClient.Get<TResult>(ParseAssertUri(uri), serializer, options.Parameters);
     }
 
-    public TResult Post<TOptions, TResult>(string uri, TOptions options)
-      where TOptions : IApiOptions
+    public TResult Post<TResult>(string uri, IApiOptions options)
+    {
+      return _httpClient.Post<TResult>(ParseAssertUri(uri), options.Parameters);
+    }
+
+    public TResult Post<TResult>(string uri, IApiOptions options, Func<string, TResult> serializer)
+    {
+      return _httpClient.Post<TResult>(ParseAssertUri(uri), serializer, options.Parameters);
+    }
+
+    public IEnumerable<TResult> Query<TResult>(string uri, IApiOptions options, HttpMethod method)
+    {
+      if (method == HttpMethod.Post)
+      {
+        return Post<IEnumerable<TResult>>(uri, options);
+      }
+
+      return Get<IEnumerable<TResult>>(uri, options);
+    }
+
+    public IEnumerable<TResult> Query<TResult>(string uri, IApiOptions options, HttpMethod method, Func<string, IEnumerable<TResult>> serializer)
+    {
+      if (method == HttpMethod.Post)
+      {
+        return Post<IEnumerable<TResult>>(uri, options, serializer);
+      }
+
+      return Get<IEnumerable<TResult>>(uri, options, serializer);
+    }
+
+    private Uri ParseAssertUri(string uri)
     {
       Uri parsedUri;
 
@@ -48,40 +63,7 @@ namespace BirdFeed.Core
         throw new InvalidCastException("Invalid uri");
       }
 
-      return Post<TOptions, TResult>(parsedUri, options);
-    }
-
-    public TResult Post<TOptions, TResult>(Uri uri, TOptions options)
-      where TOptions : IApiOptions
-    {
-        if (uri == null)
-      {
-        throw new ArgumentNullException("uri");
-      }
-
-      return _httpClient.Post<TResult>(uri, options.Parameters);
-    }
-
-    public IEnumerable<TResult> Query<TOptions, TResult>(string uri, TOptions options, HttpMethod method)
-      where TOptions : IApiOptions
-    {
-      if (method == HttpMethod.Post)
-      {
-        return Post<TOptions, IEnumerable<TResult>>(uri, options);
-      }
-
-      return Get<TOptions, IEnumerable<TResult>>(uri, options);
-    }
-
-    public IEnumerable<TResult> Query<TOptions, TResult>(Uri uri, TOptions options, HttpMethod method)
-      where TOptions : IApiOptions
-    {
-      if (method == HttpMethod.Post)
-      {
-        return Post<TOptions, IEnumerable<TResult>>(uri, options);
-      }
-
-      return Get<TOptions, IEnumerable<TResult>>(uri, options);
+      return parsedUri;
     }
 
     private readonly IAuthCredentials _auth;

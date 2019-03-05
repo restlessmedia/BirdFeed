@@ -17,6 +17,11 @@ namespace BirdFeed.Core
 
     public T Get<T>(Uri uri, IDictionary<string, string> data = null)
     {
+      return Get<T>(uri, json => DefaultSerializer<T>(json), data);
+    }
+
+    public T Get<T>(Uri uri, Func<string, T> serializer, IDictionary<string, string> data = null)
+    {
       if (uri == null)
       {
         throw new ArgumentNullException("uri");
@@ -37,7 +42,7 @@ namespace BirdFeed.Core
           throw;
         }
 
-        return JsonConvert.DeserializeObject<T>(result);
+        return serializer(result);
       }
     }
 
@@ -48,7 +53,12 @@ namespace BirdFeed.Core
 
     public T Post<T>(Uri uri, IDictionary<string, string> data = null)
     {
-      return Upload<T>(uri, HttpMethod.Post, data);
+      return Post<T>(uri, json => DefaultSerializer<T>(json), data);
+    }
+
+    public T Post<T>(Uri uri, Func<string, T> serializer, IDictionary<string, string> data = null)
+    {
+      return Upload<T>(uri, HttpMethod.Post, serializer, data);
     }
 
     public void Put(Uri uri, IDictionary<string, string> data = null)
@@ -58,7 +68,12 @@ namespace BirdFeed.Core
 
     public T Put<T>(Uri uri, IDictionary<string, string> data = null)
     {
-      return Upload<T>(uri, HttpMethod.Put, data);
+      return Put<T>(uri, json => DefaultSerializer<T>(json), data);
+    }
+
+    public T Put<T>(Uri uri, Func<string, T> serializer, IDictionary<string, string> data = null)
+    {
+      return Upload<T>(uri, HttpMethod.Put, serializer, data);
     }
 
     public event HttpClientEventHandler PreResponse;
@@ -68,9 +83,6 @@ namespace BirdFeed.Core
     private Client CreateClient(Uri uri, HttpMethod method, IDictionary<string, string> data = null)
     {
       Client client = new Client();
-      
-      // use ssl - expose as constructor arg?
-      ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3;
 
       if (PreResponse != null)
       {
@@ -93,7 +105,7 @@ namespace BirdFeed.Core
       }
     }
 
-    private T Upload<T>(Uri uri, HttpMethod method, IDictionary<string, string> data = null)
+    private T Upload<T>(Uri uri, HttpMethod method, Func<string, T> serializer, IDictionary<string, string> data = null)
     {
       if (uri == null)
       {
@@ -113,9 +125,13 @@ namespace BirdFeed.Core
           throw;
         }
 
-        string json = Encoding.UTF8.GetString(response);
-        return JsonConvert.DeserializeObject<T>(json);
+        return serializer(Encoding.UTF8.GetString(response));
       }
+    }
+
+    private T DefaultSerializer<T>(string json)
+    {
+      return JsonConvert.DeserializeObject<T>(json);
     }
 
     private class Client : WebClient
@@ -127,12 +143,18 @@ namespace BirdFeed.Core
 
       protected override WebRequest GetWebRequest(Uri address)
       {
-        WebRequest request = base.GetWebRequest(address);
+        ServicePointManager.Expect100Continue = true;
+        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls;
+        HttpWebRequest request = (HttpWebRequest)base.GetWebRequest(address);
+
+        request.ProtocolVersion = HttpVersion.Version10;
 
         if (!_deCompress)
         {
           return request;
-        } ((HttpWebRequest)request).AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
+        }
+
+        request.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
 
         return request;
       }

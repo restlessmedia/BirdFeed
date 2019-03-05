@@ -11,10 +11,6 @@ namespace BirdFeed.UnitTests
       _client = new HttpClient();
     }
 
-    private readonly IAuthCredentials _auth;
-
-    private readonly IHttpClient _httpClient;
-
     private readonly HttpClient _client;
   }
 }

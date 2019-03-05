@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using BirdFeed.Core.Exceptions;
+using System;
 
-namespace Twitter.Core.Exceptions
+namespace BirdFeed.Core.Exceptions
 {
-    public class TwitterSerializationException : TwitterException
-    {
-        public TwitterSerializationException(ExceptionCode code, Exception innerException)
-            : base(code, innerException)
-        {
-        }
-    }
+  public class TwitterSerializationException : TwitterException
+  {
+    public TwitterSerializationException(ExceptionCode code, Exception innerException)
+        : base(code, innerException) { }
+  }
 }

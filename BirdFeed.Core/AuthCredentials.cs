@@ -14,8 +14,8 @@
 
     public string ConsumerSecret { get; private set; }
 
-    public string AccessToken { get; private set; }
+    public string AccessToken { get; set; }
 
-    public string AccessTokenSecret { get; private set; }
+    public string AccessTokenSecret { get; set; }
   }
 }
