@@ -10,7 +10,9 @@ namespace BirdFeed.Core.Extensions.Collections
     public static NameValueCollection ToNameValueCollection(this IDictionary<string, string> dictionary)
     {
       if (dictionary == null || dictionary.Count == 0)
+      {
         return new NameValueCollection(0);
+      }
 
       NameValueCollection collection = new NameValueCollection(dictionary.Count);
 
@@ -27,7 +29,9 @@ namespace BirdFeed.Core.Extensions.Collections
       Dictionary<string, string> dictionary = new Dictionary<string, string>(0);
 
       if (obj == null)
+      {
         return dictionary;
+      }
 
       foreach (PropertyInfo property in obj.GetType().GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance))
       {
@@ -37,9 +41,13 @@ namespace BirdFeed.Core.Extensions.Collections
         object propertyValue = property.GetValue(obj);
 
         if (propertyValue != null)
+        {
           dictionary.Add(name, propertyValue.ToString());
+        }
         else if (propertyValue == null && hasAttr && attr.DefaultValue != null)
+        {
           dictionary.Add(name, attr.DefaultValue);
+        }
       }
 
       return dictionary;

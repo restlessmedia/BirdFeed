@@ -20,9 +20,11 @@ namespace BirdFeed.Core
             Section section = ConfigurationManager.GetSection("birdFeed") as Section;
 
             if(section == null)
-                throw new ConfigurationErrorsException("Invalid configuration section");
+      {
+        throw new ConfigurationErrorsException("Invalid configuration section");
+      }
 
-            return section;
+      return section;
         }
 
         private static ITwitterHttpClient CreateClient()

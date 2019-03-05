@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Net.Http;
-using System.Security.Cryptography;
 using System.Text;
 using BirdFeed.Core.Extensions;
 
@@ -13,29 +12,33 @@ namespace BirdFeed.Core
   {
     public OAuth(IOAuthSigning signing, IAuthCredentials auth, HttpMethod method, string baseUri, IDictionary<string, string> requestParameters, string nonce, string timestamp)
     {
-      if (signing == null)
-        throw new ArgumentNullException("signing");
-
-      if (auth == null)
-        throw new ArgumentNullException("auth");
-
       if (string.IsNullOrEmpty(baseUri))
+      {
         throw new ArgumentNullException("baseUri");
+      }
 
       if (requestParameters == null)
+      {
         throw new ArgumentNullException("requestParameters");
+      }
 
       if (requestParameters.Count == 0)
+      {
         throw new ArgumentException("Invalid number of request parameters", "requestParameters");
+      }
 
       if (string.IsNullOrEmpty(nonce))
+      {
         throw new ArgumentNullException("baseUri");
+      }
 
       if (string.IsNullOrEmpty(timestamp))
+      {
         throw new ArgumentNullException("timestamp");
+      }
 
-      _signing = signing;
-      _auth = auth;
+      _signing = signing ?? throw new ArgumentNullException("signing");
+      _auth = auth ?? throw new ArgumentNullException("auth");
       _method = method;
       _baseUri = baseUri;
       _requestParameters = requestParameters;
@@ -114,7 +117,9 @@ namespace BirdFeed.Core
       parameters.Add("oauth_nonce", _nonce);
 
       if (!string.IsNullOrEmpty(signature))
+      {
         parameters.Add("oauth_signature", signature);
+      }
 
       parameters.Add("oauth_signature_method", _signing.Method);
       parameters.Add("oauth_timestamp", _timestamp);

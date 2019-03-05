@@ -1,5 +1,7 @@
 src/bin/**/*
 src/obj/**/*
+BirdFeed.Core/bin/**/*
+BirdFeed.Core/obj/**/*
 BirdFeed.UnitTests/bin/**/*
 BirdFeed.UnitTests/obj/**/*
 BirdFeed.Sample.Mvc/bin/**/*

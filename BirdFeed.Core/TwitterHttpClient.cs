@@ -9,14 +9,8 @@ namespace BirdFeed.Core
   {
     public TwitterHttpClient(IHttpClient httpClient, IAuthCredentials auth)
     {
-      if (httpClient == null)
-        throw new ArgumentNullException("httpClient");
-
-      if (auth == null)
-        throw new ArgumentNullException("auth");
-
-      _httpClient = httpClient;
-      _auth = auth;
+      _httpClient = httpClient ?? throw new ArgumentNullException("httpClient");
+      _auth = auth ?? throw new ArgumentNullException("auth");
       httpClient.PreResponse += (uri, method, responseHeaders, data) => OAuth.SetAuthorisationHeader(_auth, uri, method, responseHeaders, data);
     }
 
@@ -26,7 +20,9 @@ namespace BirdFeed.Core
       Uri parsedUri;
 
       if (!Uri.TryCreate(uri, UriKind.Absolute, out parsedUri))
+      {
         throw new InvalidCastException("Unable to cast uri");
+      }
 
       return Get<TOptions, TResult>(parsedUri, options);
     }
@@ -35,7 +31,9 @@ namespace BirdFeed.Core
       where TOptions : IApiOptions
     {
         if (uri == null)
-            throw new ArgumentNullException("uri");
+      {
+        throw new ArgumentNullException("uri");
+      }
 
       return _httpClient.Get<TResult>(uri, options.Parameters);
     }
@@ -46,7 +44,9 @@ namespace BirdFeed.Core
       Uri parsedUri;
 
       if (string.IsNullOrEmpty(uri) || !Uri.TryCreate(uri, UriKind.Absolute, out parsedUri))
+      {
         throw new InvalidCastException("Invalid uri");
+      }
 
       return Post<TOptions, TResult>(parsedUri, options);
     }
@@ -55,7 +55,9 @@ namespace BirdFeed.Core
       where TOptions : IApiOptions
     {
         if (uri == null)
-            throw new ArgumentNullException("uri");
+      {
+        throw new ArgumentNullException("uri");
+      }
 
       return _httpClient.Post<TResult>(uri, options.Parameters);
     }
@@ -64,7 +66,9 @@ namespace BirdFeed.Core
       where TOptions : IApiOptions
     {
       if (method == HttpMethod.Post)
+      {
         return Post<TOptions, IEnumerable<TResult>>(uri, options);
+      }
 
       return Get<TOptions, IEnumerable<TResult>>(uri, options);
     }
@@ -73,7 +77,9 @@ namespace BirdFeed.Core
       where TOptions : IApiOptions
     {
       if (method == HttpMethod.Post)
+      {
         return Post<TOptions, IEnumerable<TResult>>(uri, options);
+      }
 
       return Get<TOptions, IEnumerable<TResult>>(uri, options);
     }

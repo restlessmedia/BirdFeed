@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using BirdFeed.Core.Extensions;
-using BirdFeed.Core.Request;
 using BirdFeed.Core.Request.Options;
 using BirdFeed.Core.Response.Models;
 using System.Net.Http;
@@ -13,10 +12,7 @@ namespace BirdFeed.Core
   {
     public Twitter(ITwitterHttpClient client)
     {
-      if (client == null)
-        throw new ArgumentNullException("client");
-
-      _client = client;
+      _client = client ?? throw new ArgumentNullException("client");
     }
 
     public Tweet Latest(string username)
@@ -27,7 +23,9 @@ namespace BirdFeed.Core
     public IEnumerable<Tweet> Tweets(string username, int count)
     {
       if (string.IsNullOrEmpty(username))
+      {
         throw new ArgumentNullException("username");
+      }
 
       return Tweets(new UserTimelineOptions(username, count));
     }
@@ -35,15 +33,26 @@ namespace BirdFeed.Core
     public IEnumerable<Tweet> Tweets(UserTimelineOptions options)
     {
       if (options == null)
+      {
         throw new ArgumentNullException("options");
+      }
 
-      return _client.Query<UserTimelineOptions, UserTimelineResponse>("https://api.twitter.com/1.1/statuses/user_timeline.json", options, HttpMethod.Get).Select(x => x.ToTweet());
+      IEnumerable<UserTimelineResponse> response = _client.Query<UserTimelineOptions, UserTimelineResponse>("https://api.twitter.com/1.1/statuses/user_timeline.json", options, HttpMethod.Get);
+
+      if (response == null)
+      {
+        return Enumerable.Empty<Tweet>();
+      }
+
+      return response.Select(x => x.ToTweet());
     }
 
     public Tweet Tweet(string status)
     {
       if (string.IsNullOrEmpty(status))
+      {
         throw new ArgumentNullException("status");
+      }
 
       return Tweet(new UpdateStatusOptions(status));
     }
@@ -51,7 +60,9 @@ namespace BirdFeed.Core
     public Tweet Tweet(UpdateStatusOptions options)
     {
       if (options == null)
+      {
         throw new ArgumentNullException("options");
+      }
 
       return _client.Post<UpdateStatusOptions, UserTimelineResponse>("https://api.twitter.com/1.1/statuses/update.json", options).ToTweet();
     }

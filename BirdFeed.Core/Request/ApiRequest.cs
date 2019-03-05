@@ -8,10 +8,7 @@ namespace BirdFeed.Core.Request
   {
     public ApiRequest(Uri uri, HttpMethod method, TOptions options)
     {
-      if (uri == null)
-        throw new ArgumentNullException("uri");
-
-      Uri = uri;
+      Uri = uri ?? throw new ArgumentNullException("uri");
       Method = method;
       Options = options;
     }

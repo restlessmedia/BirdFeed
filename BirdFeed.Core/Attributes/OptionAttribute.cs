@@ -7,7 +7,9 @@ namespace BirdFeed.Core.Attributes
     public OptionAttribute(string name, string defaultValue)
     {
       if (string.IsNullOrEmpty(name))
+      {
         throw new ArgumentNullException("name");
+      }
 
       Name = name;
       DefaultValue = defaultValue;

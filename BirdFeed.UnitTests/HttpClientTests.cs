@@ -1,7 +1,5 @@
 ﻿using BirdFeed.Core;
-using FakeItEasy;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 
 namespace BirdFeed.UnitTests
 {

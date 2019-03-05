@@ -9,21 +9,27 @@ namespace BirdFeed.Core.Request.Options
         public UserTimelineOptions(int userId, int count)
         {
             if (count == 0)
-                throw new ArgumentException("count", string.Format("Invalid value {0} for count", count));
+      {
+        throw new ArgumentException("count", string.Format("Invalid value {0} for count", count));
+      }
 
-            UserId = userId;
+      UserId = userId;
             Count = count;
         }
 
         public UserTimelineOptions(string username, int count)
         {
             if (string.IsNullOrEmpty(username))
-                throw new ArgumentNullException("username");
+      {
+        throw new ArgumentNullException("username");
+      }
 
-            if (count == 0)
-                throw new ArgumentException("count", string.Format("Invalid value {0} for count", count));
+      if (count == 0)
+      {
+        throw new ArgumentException("count", string.Format("Invalid value {0} for count", count));
+      }
 
-            Username = username;
+      Username = username;
             Count = count;
         }
 

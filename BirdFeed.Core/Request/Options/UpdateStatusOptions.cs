@@ -8,9 +8,11 @@ namespace BirdFeed.Core.Request.Options
         public UpdateStatusOptions(string status)
         {
             if (string.IsNullOrEmpty(status))
-                throw new ArgumentNullException("status");
+      {
+        throw new ArgumentNullException("status");
+      }
 
-            Status = status;
+      Status = status;
         }
 
         public string Status { get; private set; }
