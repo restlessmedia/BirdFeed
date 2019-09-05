@@ -31,16 +31,7 @@ namespace BirdFeed.Core
       {
         client.QueryString.Add(data.ToNameValueCollection());
 
-        string result;
-
-        try
-        {
-          result = client.DownloadString(uri);
-        }
-        catch
-        {
-          throw;
-        }
+        string result = client.DownloadString(uri);
 
         return serializer(result);
       }
@@ -114,16 +105,7 @@ namespace BirdFeed.Core
 
       using (Client client = CreateClient(uri, method, data))
       {
-        byte[] response;
-
-        try
-        {
-          response = client.UploadValues(uri, method.ToString(), data.ToNameValueCollection());
-        }
-        catch
-        {
-          throw;
-        }
+        byte[] response = client.UploadValues(uri, method.ToString(), data.ToNameValueCollection());
 
         return serializer(Encoding.UTF8.GetString(response));
       }
