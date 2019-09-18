@@ -9,7 +9,7 @@ namespace BirdFeed.Core
   {
     public CallbackMessageHandler(ITwitter twitter)
     {
-      _twitter = twitter ?? throw new ArgumentNullException("twitter");
+      _twitter = twitter ?? throw new ArgumentNullException(nameof(twitter));
     }
 
     protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)

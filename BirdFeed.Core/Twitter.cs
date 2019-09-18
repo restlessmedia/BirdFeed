@@ -112,7 +112,7 @@ namespace BirdFeed.Core
     {
       if (string.IsNullOrEmpty(callbackUri))
       {
-        throw new ArgumentNullException("callbackUri");
+        throw new ArgumentNullException(nameof(callbackUri));
       }
 
       const string uri = "https://api.twitter.com/oauth/request_token";

@@ -10,3 +10,5 @@ BirdFeed.Sample.Mvc/obj/**/*
 packages/**/*
 .DS_Store
 Nuget.Config
+BirdFeed.Sample.Mvc/bin/BirdFeed.Sample.Mvc.dll.config
+BirdFeed.Sample.Mvc/BirdFeed.Sample.Mvc.csproj.user

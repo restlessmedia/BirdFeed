@@ -7,7 +7,7 @@ namespace BirdFeed.Core
   {
     public DefaultAuthProvider(IAuthCredentials authCredentials)
     {
-      _authCredentials = authCredentials ?? throw new ArgumentNullException("authCredentials");
+      _authCredentials = authCredentials ?? throw new ArgumentNullException(nameof(authCredentials));
     }
 
     public IAuthCredentials Get()
@@ -17,7 +17,8 @@ namespace BirdFeed.Core
 
     public void Set(IAccessToken accessToken)
     {
-      //_authCredentials.AccessToken
+      _authCredentials.AccessToken = accessToken.AccessToken;
+      _authCredentials.AccessTokenSecret = accessToken.AccessTokenSecret;
     }
 
     private readonly IAuthCredentials _authCredentials;

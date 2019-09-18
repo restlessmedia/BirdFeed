@@ -57,6 +57,19 @@ namespace BirdFeed.UnitTests
       _twitter.Tweet(status);
     }
 
+    [TestMethod]
+    public void asd()
+    {
+      IAuthCredentials authCredentials = new AuthCredentials("4qCE4TdIxBmIBg4V74vAw", "AfDVun8eRxJngbPvL5CWz9hSet0u7j7iWpz1dVqOmg", "378507093-07LQVYYXwCA5kQEN68Do6oatBDobNDIhvRExPlfJ", "XEfZmzAr4rtYc5yeTZaqBR9iE8aEUnvpt5I7MDpF8");
+      IConfiguration configuration = new DefaultConfiguration(authCredentials);
+
+      IHttpClient httpClient = new Core.HttpClient();
+      ITwitterHttpClient twitterHttpClient = new TwitterHttpClient(httpClient, authCredentials);
+      Twitter twitter = new Twitter(configuration, twitterHttpClient);
+
+      twitter.Latest("@blakestanleye8");
+    }
+
     private void AssertQuery<TOptions, TResult>(string uri, Func<TOptions, bool> optionValidate, HttpMethod method)
       where TOptions : IApiOptions
     {

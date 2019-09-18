@@ -30,19 +30,7 @@ namespace BirdFeed.Core
       using (Client client = CreateClient(uri, HttpMethod.Get, data))
       {
         client.QueryString.Add(data.ToNameValueCollection());
-
-        string result;
-
-        try
-        {
-          result = client.DownloadString(uri);
-        }
-        catch
-        {
-          throw;
-        }
-
-        return serializer(result);
+        return serializer(client.DownloadString(uri));
       }
     }
 
@@ -83,12 +71,7 @@ namespace BirdFeed.Core
     private Client CreateClient(Uri uri, HttpMethod method, IDictionary<string, string> data = null)
     {
       Client client = new Client();
-
-      if (PreResponse != null)
-      {
-        PreResponse(uri, method, client.Headers, data);
-      }
-
+      PreResponse?.Invoke(uri, method, client.Headers, data);
       return client;
     }
 
@@ -114,17 +97,7 @@ namespace BirdFeed.Core
 
       using (Client client = CreateClient(uri, method, data))
       {
-        byte[] response;
-
-        try
-        {
-          response = client.UploadValues(uri, method.ToString(), data.ToNameValueCollection());
-        }
-        catch
-        {
-          throw;
-        }
-
+        byte[] response = client.UploadValues(uri, method.ToString(), data.ToNameValueCollection());
         return serializer(Encoding.UTF8.GetString(response));
       }
     }
@@ -144,7 +117,8 @@ namespace BirdFeed.Core
       protected override WebRequest GetWebRequest(Uri address)
       {
         ServicePointManager.Expect100Continue = true;
-        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls;
+        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
         HttpWebRequest request = (HttpWebRequest)base.GetWebRequest(address);
 
         request.ProtocolVersion = HttpVersion.Version10;
